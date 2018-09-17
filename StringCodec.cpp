@@ -9,6 +9,7 @@
 #include <sag_connectivity_plugins.hpp>
 #include <connectivity-plugins/include/MessageData.h>
 #include <connectivity-plugins/include/ConfigParse.h>
+#include <unicode.h>
 
 namespace com {
 namespace softwareag {
