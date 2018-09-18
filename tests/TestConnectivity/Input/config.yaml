@@ -1,0 +1,38 @@
+connectivityPlugins:
+  mapperCodec:
+    libraryName: MapperCodec
+    class: MapperCodec
+  diagnosticCodec:
+    libraryName: DiagnosticCodec
+    class: DiagnosticCodec
+  stringCodec:
+    libraryName: MultiStringCodec
+    directory: ${PARENT_DIR}/../..
+    class: StringCodec
+  echoTransport:
+    libraryName: EchoTransport
+    class: EchoTransport
+
+
+startChains:
+  stringChain:
+    - apama.eventMap
+    - mapperCodec:
+       '*':
+         towardsHost:
+            mapFrom:
+              - payload.data: payload
+              - payload.charset: metadata.charset
+         towardsTransport:
+            mapFrom:
+              - metadata.charset: payload.charset
+              - payload: payload.data
+    - diagnosticCodec:
+        output: file
+        fileName: string-before.txt
+    - stringCodec:
+        useMessageEncoding: true
+    - diagnosticCodec:
+        output: file
+        fileName: string-after.txt
+    - echoTransport

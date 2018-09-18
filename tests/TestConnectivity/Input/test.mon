@@ -1,0 +1,29 @@
+event Data
+{
+	string data;
+	string charset;
+}
+
+monitor Testcase
+{
+	action onload()
+	{
+		monitor.subscribe("stringChain");
+
+		string data := "latin-1_GermanSSxssxáÁxßx_abc123@#£!~=x";
+
+		on all Data() as d {
+			if (data != d.data) {
+				log "Round-trip mis-match (expected "+data+" but got "+d.data+")" at ERROR; 
+			} else {
+				log "Round-trip OK" at INFO;
+			}
+		}
+
+		com.softwareag.connectivity.ConnectivityPlugins.onApplicationInitialized();		
+
+		send Data(data, "utf-8") to "stringChain";
+		send Data(data, "utf-16") to "stringChain";
+		send Data(data, "iso8859-1") to "stringChain";
+	}
+}
