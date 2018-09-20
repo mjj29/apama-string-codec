@@ -9,9 +9,12 @@ connectivityPlugins:
     libraryName: MultiStringCodec
     directory: ${PARENT_DIR}/../..
     class: StringCodec
-  echoTransport:
-    libraryName: EchoTransport
-    class: EchoTransport
+  unitTestHarness:
+    classpath: ${APAMA_HOME}/lib/connectivity-unit-test-harness.jar
+    class: com.softwareag.connectivity.testplugins.UnitTestHarness
+  nullTransport:
+    classpath: ${APAMA_HOME}/lib/connectivity-unit-test-harness.jar
+    class: com.softwareag.connectivity.testplugins.NullTransport
 
 
 startChains:
@@ -35,4 +38,7 @@ startChains:
     - diagnosticCodec:
         output: file
         fileName: string-after.txt
-    - echoTransport
+    - unitTestHarness:
+        pluginUnderTest: towardsHost
+        echoBack: true
+    - nullTransport
