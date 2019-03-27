@@ -72,13 +72,13 @@ public:
 			map_t::iterator it;
 			if (checkEncoding && (it = meta.find(metadataCharsetKey)) != meta.end()) {
 				size_t len=(data.size()+2)*4;
-				char* target=(char *)malloc(len);
+				std::unique_ptr<char[]> target{new char[len]};
 				UErrorCode errCode=U_ZERO_ERROR;
-				ucnv_convert("UTF-8", get<const char*>(it->second), target, len, (char*) data.begin(), data.size(), &errCode);
+				ucnv_convert("UTF-8", get<const char*>(it->second), target.get(), len, (char*) data.begin(), data.size(), &errCode);
 				if(U_FAILURE (errCode)) {
 					throw std::runtime_error(("Could not convert string into encoding "+std::string(get<const char*>(it->second))+" because of ")+u_errorName(errCode));
 				}
-				m.setPayload(data_t(target));
+				m.setPayload(data_t(target.get()));
 			} else {
 				m.setPayload(data_t((const char*)data.begin(), data.size()));
 			}
